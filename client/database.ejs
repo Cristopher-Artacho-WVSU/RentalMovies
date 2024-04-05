@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database</title>
+    <style>
+
+    body{
+            display: grid;
+            grid-template-columns: 300px 700px 100px 300px;
+            grid-template-rows: 50px 700px 700px 200px;
+            padding: 0;
+            margin: 0;
+        }
+
+
+        #searchResults{
+        grid-row: 3;
+        grid-column: 2/span 2;
+        padding-top: 100px;
+        font-family:Verdana, Geneva, Tahoma, sans-serif;
+        font-size: 18px;
+        padding-left: 30px;
+        
+    }
+    </style>
+</head>
+<body>
+
+    <div id="searchResults">
+
+    </div>
+
+
+    <script>
+// Display the search results
+function displaySearchResults(results) {
+    const searchResults = document.getElementById('searchResults');
+    searchResults.innerHTML = '';
+    // Check if results is an array before iterating over it
+    if (Array.isArray(results)) {
+        results.forEach(movie => {
+            const movieContainer = document.createElement('div');
+            movieContainer.classList.add('movie-container');
+
+            var movieLossOrProfit = movie.day.reduce((acc, dayObj) => {
+            const borrow = Object.values(dayObj)[0]; // Extracting borrow value from the day object
+            return acc + borrow;
+            }, 0);
+
+            var Total_Money_Week = ((movieLossOrProfit * movie.rate) + movie.ovn *5)
+            var LossOrProfit  = (Total_Money_Week -  movie.cost)
+            var determine
+
+            const movieDetails = document.createElement('div');
+            if (Total_Money_Week > movie.cost){
+                determine = "Profitted"
+                movieDetails.style.backgroundColor = '#7DF9FF'
+            } else{
+                determine = "Loss"
+                movieDetails.style.backgroundColor = '#FAA0A0'
+            }
+
+            movieDetails.classList.add('movie-details');
+            movieDetails.innerHTML = `
+                <strong>Title:</strong> ${movie.title}<br> <br>
+                <strong>Borrow per days:</strong><br> ${movie.day.map(dayObj => Object.entries(dayObj).map(([day, borrow]) => `${day}: ${borrow}`).join(', ') + '<br>').join('')}
+                <br><strong>Rate:</strong> ${movie.rate} &nbsp; &nbsp; &nbsp; <strong>Cost:</strong> ${movie.cost}<br>
+                
+                
+                <strong>Money gained in the Week:</strong> ${Total_Money_Week} &nbsp; &nbsp; &nbsp; <strong>Loss or Profit:</strong> ${LossOrProfit} <br>
+                <strong>Overnights:</strong> ${movie.ovn} <br>
+                <strong>Status:</strong> ${determine}<br><br><br>
+            `;
+
+            const imgDiv = document.createElement('div');
+            imgDiv.classList.add('img-div');
+            imgDiv.innerHTML = `
+            <img src="./Pictures/${movie.title}.jpg" alt="Movie Image" width="200" height="350">
+            `;
+
+            movieContainer.appendChild(movieDetails); // Append movieDetails to movieContainer
+            searchResults.appendChild(movieContainer);
+        });
+    } else {
+        console.error('Results are not in the expected format');
+    }
+}
+
+fetch('/movies') // Fetch movies
+    .then(response => response.json())
+    .then(data => {
+        displaySearchResults(data);
+    })
+    .catch(error => console.error('Error:', error));
+    </script>
+</body>
+</html>
