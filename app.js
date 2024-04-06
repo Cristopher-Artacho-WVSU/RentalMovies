@@ -43,24 +43,24 @@ app.get('/movies', (req, res) => {
 //DISPLAYING THE COLLECTION 'cars' IN THE '/car' URL
     
 
-//LIMITING 7 DOCUMENTS PER PAGE
-database.collection('movies')
-.find()
-.sort({
-    title: 1
-})
-// .skip(page * carsPerPage) //SKIP THE AMOUNT OF CARS TIMES THE PAGE
-// .limit(carsPerPage) //LIMIT THE AMOUNT OF CARS DISPLAYED IN ONE PAGE EQUAL TO THE VALUE
-.forEach(movie => movies.push(movie))
-// .toArray()
-.then(() =>{
-    res.status(200).json(movies)
-})
-.catch(() =>{
-    res.status(200).json({
-        error: 'Could Not Fetch Documents'
+    //LIMITING 7 DOCUMENTS PER PAGE
+    database.collection('movies')
+    .find()
+    .sort({
+        title: 1
     })
-})
+    // .skip(page * carsPerPage) //SKIP THE AMOUNT OF CARS TIMES THE PAGE
+    // .limit(carsPerPage) //LIMIT THE AMOUNT OF CARS DISPLAYED IN ONE PAGE EQUAL TO THE VALUE
+    .forEach(movie => movies.push(movie))
+    // .toArray()
+    .then(() =>{
+        res.status(200).json(movies)
+    })
+    .catch(() =>{
+        res.status(200).json({
+            error: 'Could Not Fetch Documents'
+        })
+    })
 })
 
 
